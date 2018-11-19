@@ -22,24 +22,33 @@ class HistoryViewController: UIViewController, UITableViewDelegate, UITableViewD
     var saveBloodGlu: Int = 0
     var saveInsulinDose: Int = 0
     
-    @IBOutlet weak var dateTimeLabel: UILabel!
-    @IBOutlet weak var carbIntakeLabel: UILabel!
-    @IBOutlet weak var bloodGluLabel: UILabel!
-    @IBOutlet weak var insulinDoseLabel: UILabel!
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        dateTimeLabel.text = saveDateTime
-        carbIntakeLabel.text = "\(saveCarbIntake)"
-        bloodGluLabel.text = "\(saveBloodGlu)"
-        insulinDoseLabel.text = "\(saveInsulinDose)"
         
         historyTableView.delegate = self
         historyTableView.dataSource = self
         historyTableView.register(UINib(nibName: "HistoryTableViewCell", bundle: nil), forCellReuseIdentifier: "historyCell")
 
         loadHistory()
+        
+        save()
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let header = UIView()
+        
+        let headerLabel = UILabel(frame: CGRect(x: 6, y: 6, width: tableView.bounds.size.width, height: tableView.bounds.size.height))
+        headerLabel.font = UIFont(name: "Verdana Bold", size: 14)
+        headerLabel.textColor = UIColor.black
+        headerLabel.text = "Date, Carb Intake, Blood Glucose, Insulin Dose"
+        headerLabel.sizeToFit()
+        header.addSubview(headerLabel)
+        
+        return header
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 44
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -48,7 +57,6 @@ class HistoryViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "historyCell", for: indexPath) as! HistoryTableViewCell
-        //        historyArray = [HistoryData.init(dateTime: "", bloodGlu: 0, insulinDose: 0)]
         
         cell.dateTimeLabel.text = historyArray[indexPath.row].dateTime
         cell.carbLabel.text = "\(historyArray[indexPath.row].carbIn)"
@@ -56,7 +64,14 @@ class HistoryViewController: UIViewController, UITableViewDelegate, UITableViewD
         cell.totalInsulinLabel.text = "\(historyArray[indexPath.row].insulinDose)"
         return cell
     }
-  // cite Angela Yu
+
+   
+    
+/* Title: Todoey
+ Author: Angela Yu, londappbrewery
+ Date: 2018
+ Availability: https://github.com/londonappbrewery/Todoey
+ */
     func loadHistory() {
         if let data = try? Data(contentsOf: dataFilePath!) {
             let decoder = PropertyListDecoder()
@@ -68,12 +83,13 @@ class HistoryViewController: UIViewController, UITableViewDelegate, UITableViewD
         }
     }
 
-    @IBAction func saveButton(_ sender: Any) {
+    func save() {
         historyDataPoint.dateTime = saveDateTime
         historyDataPoint.carbIn = saveCarbIntake
         historyDataPoint.bloodGlu = saveBloodGlu
         historyDataPoint.insulinDose = saveInsulinDose
         historyArray.append(historyDataPoint)
+        
         let encoder = PropertyListEncoder()
         do {
             let data = try encoder.encode(self.historyArray)
@@ -82,6 +98,10 @@ class HistoryViewController: UIViewController, UITableViewDelegate, UITableViewD
             print ("Error encoding item array, \(error)")
         }
         historyTableView.reloadData()
-    // cite Angela Yu
     }
+    
+    @IBAction func startOverButton(_ sender: Any) {
+        navigationController?.popToRootViewController(animated: false)
+    }
+    
 }

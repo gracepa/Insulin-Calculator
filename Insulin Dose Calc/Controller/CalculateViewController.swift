@@ -63,7 +63,7 @@ class CalculateViewController: UIViewController {
         return totalInsulinDose
     }
 
-    @IBAction func seeHistoryButton(_ sender: Any) {
+    @IBAction func saveDataButton(_ sender: Any) {
         performSegue(withIdentifier: "goToHistoryScreen", sender: self)
     }
     
@@ -74,10 +74,6 @@ class CalculateViewController: UIViewController {
             history.saveCarbIntake = carbIntake
             history.saveBloodGlu = bloodGlucose
             history.saveInsulinDose = totalInsulinDose
-           
         }
-        
     }
-   
-
 }
